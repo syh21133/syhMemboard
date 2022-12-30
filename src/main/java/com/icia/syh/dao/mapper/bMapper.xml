@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Board">
+
+<insert id="bWrite" parameterType="board">
+	INSERT INTO BOARDT VALUES(BT_SEQ.NEXTVAL,#{bWriter},#{bTitle},#{bContent},SYSDATE,0,#{bFileName})
+</insert>
+
+
+<select id="bView"  parameterType="int" resultType="board">
+	SELECT * FROM BOARDT WHERE BNUM =#{bNum} 
+</select>
+
+<update id="bHit" parameterType="int">
+	UPDATE BOARDT SET BHIT = BHIT + 1 WHERE BNUM = #{bNum}
+</update>
+
+<update id="bModi" parameterType="board">
+	UPDATE BOARDT SET BTITLE = #{bTitle}, bWriter = #{bWriter}, BCONTENT = #{bContent}, 
+	BFILENAME = #{bFileName} , BDATE = #{bDate}, BHIT = #{bHit} WHERE BNUM= #{bNum}
+</update>
+
+<delete id="bDel" parameterType="int">
+	DELETE FROM BOARDT WHERE BNUM = #{bNum}
+</delete>
+
+<select id="bCount" resultType="int">
+		SELECT COUNT(*) FROM BOARDT
+	</select>
+<select id="bList" parameterType="paging" resultType="board">
+		<!-- SELECT * FROM (SELECT ROWNUM RN, A.* FROM (SELECT * FROM BOARDT ORDER BY BNUM DESC ) A) WHERE RN BETWEEN #{startRow} AND #{endRow} -->
+		SELECT * FROM BOARDTLIST WHERE RN BETWEEN #{startRow} AND #{endRow}
+</select>
+
+
+
+	<select id="bSearch" parameterType="paging" resultType="board">
+		<!-- SELECT * FROM BOARDTLIST WHERE ${category} LIKE '%'||#{keyword}||'%' -->
+		SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM BOARDT WHERE ${category} LIKE '%'||#{keyword}||'%' ORDER BY BNUM DESC) A)WHERE RN BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	
+			<select id="bsCount" parameterType="search" resultType="int">
+				SELECT COUNT(*) FROM BOARDT WHERE ${category} LIKE'%'||#{keyword}||'%'
+			</select>
+	
+	
+	
+	
+	<select id="indexList"  resultType="board">
+	SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM BOARDT ORDER BY BHIT DESC) A)WHERE RN BETWEEN 1 AND 5
+	</select>
+	
+	<select id="indexDate"  resultType="board">
+	SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM BOARDT ORDER BY BDATE DESC) A)WHERE RN BETWEEN 1 AND 5
+	</select>
+	
+	<select id="myList" parameterType="paging" resultType="board">
+	SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM BOARDT ORDER BY BDATE DESC) A)WHERE RN BETWEEN #{startRow} AND #{endRow} AND BWRITER = #{mId}
+		<!-- SELECT * FROM BOARDTLIST WHERE RN BETWEEN #{startRow} AND #{endRow} AND BWRITER = #{mId} -->
+	</select>
+	<select id="mybCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM BOARDT WHERE BWRITER = #{mId}
+	</select>
+
+</mapper>

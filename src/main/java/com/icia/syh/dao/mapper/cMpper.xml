@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Comment">
+<select id="cList" parameterType="int" resultType="comment">
+		SELECT * FROM COMMENTT WHERE CBNUM  = #{cbNum}
+	</select>
+	
+	<insert id="cmtWrite" parameterType="comment">
+	INSERT INTO COMMENTT VALUES(CMT_SEQ.NEXTVAL,#{cbNum},#{cmtWriter},#{cmtContent},SYSDATE)
+	</insert>
+	
+	<delete id="cmtDel" parameterType="int">
+		DELETE FROM COMMENTT WHERE CMTNUM = #{cmtNum}
+	</delete>
+	
+	<select id="cmtList" parameterType="comment" resultType="comment">
+		SELECT * FROM COMMENTT WHERE CBNUM  = #{cbNum}
+	</select>
+
+	<update id="cmtModi" parameterType="comment">
+		UPDATE COMMENTT SET CMTCONTENT = #{cmtContent} WHERE CMTNUM = #{cmtNum}
+	</update>
+	
+	<select id="cmtT"  parameterType="int" resultType="comment">
+		SELECT * FROM COMMENTT WHERE CMTNUM  = #{cmtNum}
+	</select>
+	
+	<select id="mycCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM COMMENTT WHERE CMTWRITER = #{mId}
+	</select>
+	
+	<select id="myCmt" parameterType="paging" resultType="comment">
+		<!-- SELECT * FROM COMMENTTLIST WHERE RN BETWEEN #{startRow} AND #{endRow} AND CMTWRITER = #{mId} -->
+		SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM COMMENTT WHERE  CMTWRITER = #{mId} ORDER BY CMTDATE DESC) A)WHERE RN BETWEEN #{startRow}  AND #{endRow}
+</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+
+	<insert id="mJoin" parameterType="member">
+		INSERT INTO MEMBERT
+		VALUES(#{mId},#{mPw},#{mName},#{mBirth},#{mGender},#{mEmail},#{mPhone},#{mAddr},#{mProfileName})
+	</insert>
+
+	<select id="mLogin" parameterType="member" resultType="member">
+		SELECT mPw,mProfileName FROM MEMBERT WHERE MID=#{mId}
+	</select>
+
+	<!-- <select id="mList" resultType="member"> SELECT * FROM MEMBERT </select> -->
+
+	<select id="checkId" parameterType="String" resultType="String">
+		SELECT mId FROM MEMBERT WHERE MID=#{mId}
+	</select>
+	<select id="mCount" resultType="int">
+		SELECT COUNT(*) FROM MEMBERT
+	</select>
+	<select id="mList" parameterType="paging" resultType="member">
+
+		SELECT * FROM MEMBERLIST WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+
+	<select id="mSearchName" parameterType="search"
+		resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MNAME LIKE '%'||#{keyword}||'%'
+	</select>
+	<select id="mSearchId" parameterType="search"
+		resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MID LIKE '%'||#{keyword}||'%'
+	</select>
+	<select id="mSearchPhone" parameterType="search"
+		resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MPHONE LIKE '%'||#{keyword}||'%'
+	</select>
+	
+	<select id="mSearch" parameterType="search" resultType="member">
+		<!-- SELECT * FROM MEMBERLIST WHERE ${category} LIKE '%'||#{keyword}||'%' -->
+		SELECT * FROM (SELECT ROWNUM AS RN, A.* FROM (SELECT * FROM MEMBERT WHERE ${category} LIKE '%'||#{keyword}||'%' ORDER BY MID DESC) A)WHERE RN BETWEEN #{startRow} AND #{endRow} 
+	
+	</select>
+	
+	<select id="mView" parameterType="String" resultType="member">
+		SELECT * FROM MEMBERT WHERE MID =#{mId}
+	</select>
+
+	<update id="mModi" parameterType="member">
+		UPDATE MEMBERT SET MPW = #{mPw}, MNAME = #{mName}, MBIRTH = #{mBirth},
+		MGENDER = #{mGender} , MEMAIL = #{mEmail}, MPHONE = #{mPhone},
+		MADDR=#{mAddr},MPROFILENAME=#{mProfileName} WHERE MID= #{mId}
+	</update>
+	<delete id="mDel" parameterType="String">
+		DELETE FROM MEMBERT WHERE MID = #{mId}
+	</delete>
+	<select id="msCount" parameterType="search" resultType="int">
+				SELECT COUNT(*) FROM MEMBERT WHERE ${category} LIKE'%'||#{keyword}||'%'
+			</select>
+
+</mapper>
